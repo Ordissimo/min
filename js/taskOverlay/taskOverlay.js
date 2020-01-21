@@ -10,9 +10,25 @@ var taskSwitcherButton = document.getElementById('switch-task-button')
 var addTaskButton = document.getElementById('add-task')
 var addTaskLabel = addTaskButton.querySelector('span')
 var taskOverlayNavbar = document.getElementById('task-overlay-navbar')
+var closeButton = document.getElementById('close')
+var homeButton = document.getElementById('home')
+var uiCloseButton = document.querySelector('#close .label')
+var uiHomeButton = document.querySelector('#home .label')
 
 taskSwitcherButton.title = l('viewTasks')
 addTaskLabel.textContent = l('newTask')
+uiHomeButton.innerText = l('appMenuHome')
+uiCloseButton.innerText = l('appMenuClose')
+
+closeButton.addEventListener('click',  function() {
+  var window = remote.getCurrentWindow()
+  window.close()
+})
+
+homeButton.addEventListener('click',  function() {
+  let globalURL = remote.getGlobal('URLToOpen')
+  browserUI.navigate(tabs.getSelected(), globalURL)
+})
 
 taskSwitcherButton.addEventListener('click', function () {
   taskOverlay.toggle()

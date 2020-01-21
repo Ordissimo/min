@@ -8,78 +8,18 @@ var currentSearchEngine = {
   searchURL: '%s'
 }
 
-var defaultSearchEngine = 'DuckDuckGo'
+var defaultSearchEngine = 'Ordissimo'
 
 var searchEngines = {
-  DuckDuckGo: {
-    name: 'DuckDuckGo',
-    searchURL: 'https://duckduckgo.com/?q=%s&t=min',
-    queryParam: 'q'
-  },
-  Google: {
-    name: 'Google',
-    searchURL: 'https://www.google.com/search?q=%s',
-    queryParam: 'q'
-  },
-  Bing: {
-    name: 'Bing',
-    searchURL: 'https://www.bing.com/search?q=%s',
-    queryParam: 'q'
-  },
-  Yahoo: {
-    name: 'Yahoo',
-    searchURL: 'https://search.yahoo.com/yhs/search?p=%s',
-    queryParam: 'p'
-  },
-  Baidu: {
-    name: 'Baidu',
-    searchURL: 'https://www.baidu.com/s?wd=%s',
-    queryParam: 'wd'
-  },
-  StartPage: {
-    name: 'StartPage',
-    searchURL: 'https://www.startpage.com/do/search?q=%s',
-    queryParam: 'q'
-  },
-  Ecosia: {
-    name: 'Ecosia',
-    searchURL: 'https://www.ecosia.org/search?q=%s',
-    queryParam: 'q'
-  },
-  Wikipedia: {
-    name: 'Wikipedia',
-    searchURL: 'https://wikipedia.org/w/index.php?search=%s',
-    queryParam: 'search'
-  },
-  Yandex: {
-    name: 'Yandex',
-    searchURL: 'https://yandex.com/search/?text=%s',
-    queryParam: 'text'
-  },
-  none: {
-    name: 'none',
-    searchURL: 'http://%s'
+  ordissimo: {
+    name: 'Ordissimo',
+    searchURL: 'http://www.substantiel.fr/liens/moteurrechercheordissimo.php?q=%s&lang=' + getCurrentLanguage().substring(0,2)
   }
 }
 
 settings.listen('searchEngine', function (value) {
-  if (typeof value === 'string') {
-    // migrate from legacy format
-    value = {name: value}
-    settings.set('searchEngine', value)
-  }
 
-  if (value && value.name) {
-    currentSearchEngine = searchEngines[value.name]
-  } else if (value && value.url) {
-    currentSearchEngine = {
-      name: 'custom',
-      searchURL: value.url,
-      custom: true
-    }
-  } else {
-    currentSearchEngine = searchEngines[defaultSearchEngine]
-  }
+   currentSearchEngine = searchEngines[defaultSearchEngine]
 })
 
 var searchEngine = {

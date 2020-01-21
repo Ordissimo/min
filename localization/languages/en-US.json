@@ -177,6 +177,7 @@
         "appMenuWindow": "Window",
         "appMenuMinimize": "Minimize",
         "appMenuClose": "Close",
+        "appMenuHome": "Home",
         "appMenuAlwaysOnTop": "Always on Top",
         "appMenuHelp": "Help",
         "appMenuKeyboardShortcuts": "Keyboard Shortcuts",

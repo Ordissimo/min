@@ -162,6 +162,7 @@ const webviews = {
       webPreferencesString: JSON.stringify({
         webPreferences: {
           nodeIntegration: false,
+          plugins: true,
           scrollBounce: true,
           preload: __dirname + '/dist/preload.js',
           contextIsolation: true,

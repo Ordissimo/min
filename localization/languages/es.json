@@ -177,6 +177,7 @@
         "appMenuWindow": "Ventana",
         "appMenuMinimize": "Minimizar",
         "appMenuClose": "Cerrar",
+        "appMenuHome": "Inicio",
         "appMenuAlwaysOnTop": null, //missing translation
         "appMenuHelp": "Ayuda",
         "appMenuKeyboardShortcuts": "Atajos de teclado",

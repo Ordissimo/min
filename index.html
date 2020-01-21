@@ -19,6 +19,7 @@
 	<link rel="stylesheet" href="css/downloadManager.css" />
 	<link rel="stylesheet" href="ext/font-awesome-4.4.0/css/font-awesome.min.css" />
 	<link rel="stylesheet" href="node_modules/dragula/dist/dragula.min.css" />
+        <link rel="stylesheet" href="css/ordissimo.css" />
 </head>
 
 <body>
@@ -48,7 +49,18 @@
 			</svg>
 		</div>
 	</div>
-
+	<div id="controls" class="controls">
+		<center id="apptitle" class="element apptitle"></center>
+		<div id="close" class="close">
+			<img src="icons/close.png"/><span class="label">Fermer</span>
+		</div>
+		<div id="loading-spinner" class="element loading-spinner">
+			<img src="icons/spinner.gif"/>
+		</div>
+		<div id="home" class="element home">
+			<img src="icons/home.png"/><span class="label">D&eacute;part</span>
+		</div>
+	</div>
 	<div id="navbar" class="theme-background-color theme-text-color windowDragHandle" tabindex="-1">
 		<button id="menu-button" class="fa fa-ellipsis-v navbar-action-button" data-label="openMenu" tabindex="-1"></i>
 		<button id="back-button" hidden class="fa fa-angle-left navbar-action-button" data-label="goBack" tabindex="-1"></button>
@@ -57,7 +69,7 @@
 		<i class="fa fa-bars navbar-action-button invisible"></i>
 	</div>
 
-	<button id="switch-task-button" class="fa fa-bars navbar-action-button theme-text-color windowDragHandle" data-label="viewTasks" tabindex="-1"></button>
+	<i id="switch-task-button" style="display: none;"></i>
 
 	<div id="searchbar" class="theme-background-color theme-text-color">
 		<div class="top-answer-area"></div>

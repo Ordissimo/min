@@ -27,6 +27,20 @@ if (process.platform === 'win32') {
 app.commandLine.appendSwitch('disable-backgrounding-occluded-windows', 'true')
 
 var userDataPath = app.getPath('userData')
+// Specify flash path, supposing it is placed in the same directory with main.js. 
+let pluginName
+switch (process.platform) {
+   case 'win32':
+      pluginName = 'pepflashplayer.dll'
+      break
+   case 'darwin':
+      pluginName = 'PepperFlashPlayer.plugin'
+      break
+   case 'linux':
+      pluginName = 'libpepflashplayer.so'
+      break
+}
+app.commandLine.appendSwitch('ppapi-flash-path', path.join(__dirname, pluginName))
 
 var dbPath = userDataPath + (process.platform === 'win32' ? '\\IndexedDB\\file__0.indexeddb.leveldb' : '/IndexedDB/file__0.indexeddb.leveldb')
 
@@ -45,12 +59,6 @@ var mainWindow = null
 var mainMenu = null
 var isFocusMode = false
 var appIsReady = false
-
-const isFirstInstance = app.requestSingleInstanceLock()
-
-if (!isFirstInstance) {
-  app.quit()
-}
 
 var saveWindowBounds = function () {
   if (mainWindow) {
@@ -148,10 +156,12 @@ function createWindowWithBounds (bounds, shouldMaximize) {
     icon: __dirname + '/icons/icon256.png',
     frame: process.platform !== 'win32',
     alwaysOnTop: settings.get('windowAlwaysOnTop'),
+    autoHideMenuBar: true,
     backgroundColor: '#fff', // the value of this is ignored, but setting it seems to work around https://github.com/electron/electron/issues/10559
     webPreferences: {
       nodeIntegration: true,
-      additionalArguments: ['--user-data-path=' + userDataPath]
+      additionalArguments: ['--user-data-path=' + userDataPath],
+      plugins: true
     }
   })
 
@@ -230,6 +240,32 @@ function createWindowWithBounds (bounds, shouldMaximize) {
   return mainWindow
 }
 
+if (!app.requestSingleInstanceLock())
+{
+        app.quit()
+}
+else
+{
+   app.on('second-instance', (event, argv, cwd) => {
+      /* ... */
+
+      console.log( argv )
+
+      if (mainWindow) {
+         if (mainWindow.isMinimized()) mainWindow.restore();
+         mainWindow.show();
+         mainWindow.focus();
+	 if (argv.length > 2 && argv[2].localeCompare(global.URLToOpen))
+	 {
+           global.URLToOpen =  (argv.length > 2 ? argv[2] : 'https://www.ordissinaute.com/search')
+           sendIPCToWindow(mainWindow, 'addTab', {
+              url: global.URLToOpen
+           })
+	 }
+      }
+   })
+}
+
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
   // On OS X it is common for applications and their menu bar
@@ -247,21 +283,20 @@ app.on('ready', function () {
   createWindow(function () {
     mainWindow.webContents.on('did-finish-load', function () {
       // if a URL was passed as a command line argument (probably because Min is set as the default browser on Linux), open it.
-      handleCommandLineArguments(process.argv)
-
-      // there is a URL from an "open-url" event (on Mac)
-      if (global.URLToOpen) {
-        // if there is a previously set URL to open (probably from opening a link on macOS), open it
+      if (process.argv.length > 2 && process.argv[2].localeCompare(global.URLToOpen))
+      {
+        global.URLToOpen =  (process.argv.length > 2 ? process.argv[2] : 'https://www.ordissinaute.com/search')
         sendIPCToWindow(mainWindow, 'addTab', {
           url: global.URLToOpen
         })
-        global.URLToOpen = null
       }
+      mainWindow.setMenu(null);
+      // mainWindow.openDevTools()
     })
   })
 
-  createAppMenu()
-  createDockMenu()
+  // createAppMenu()
+  // createDockMenu()
   registerProtocols()
 })
 

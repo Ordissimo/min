@@ -177,6 +177,7 @@
         "appMenuWindow": "Fenster",
         "appMenuMinimize": "Minimieren",
         "appMenuClose": "Schließen",
+        "appMenuHome": "Startseite",
         "appMenuAlwaysOnTop": null, //missing translation
         "appMenuHelp": "Hilfe",
         "appMenuKeyboardShortcuts": "Tastaturkürzel",

@@ -177,6 +177,7 @@
         "appMenuWindow": "Fenêtre",
         "appMenuMinimize": "Réduire",
         "appMenuClose": "Fermer",
+        "appMenuHome": "D&eacute;part",
         "appMenuAlwaysOnTop": null, //missing translation
         "appMenuHelp": "Aide",
         "appMenuKeyboardShortcuts": "Raccourcis claviers",
