@@ -137,14 +137,18 @@ ipc.on('callViewMethod', function (e, data) {
 })
 
 ipc.on('getCapture', function (e, data) {
-  viewMap[data.id].webContents.capturePage().then(function (img) {
-    var size = img.getSize()
-    if (size.width === 0 && size.height === 0) {
-      return
-    }
-    img = img.resize({width: data.width, height: data.height})
-    mainWindow.webContents.send('captureData', {id: data.id, url: img.toDataURL()})
-  })
+  try {
+    viewMap[data.id].webContents.capturePage().then(function (img) {
+      var size = img.getSize()
+      if (size.width === 0 && size.height === 0) {
+        return
+      }
+      img = img.resize({width: data.width, height: data.height})
+      mainWindow.webContents.send('captureData', {id: data.id, url: img.toDataURL()})
+    })
+  } catch (e) {
+    console.log(e)
+  }   
 })
 
 global.getView = getView
