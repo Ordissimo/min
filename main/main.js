@@ -265,74 +265,74 @@ else
 	 }
       }
    })
+
+	// Quit when all windows are closed.
+	app.on('window-all-closed', function () {
+	  // On OS X it is common for applications and their menu bar
+	  // to stay active until the user quits explicitly with Cmd + Q
+	  if (process.platform !== 'darwin') {
+		app.quit()
+	  }
+	})
+
+	// This method will be called when Electron has finished
+	// initialization and is ready to create browser windows.
+	app.on('ready', function () {
+	  appIsReady = true
+
+	  createWindow(function () {
+		mainWindow.webContents.on('did-finish-load', function () {
+		  // if a URL was passed as a command line argument (probably because Min is set as the default browser on Linux), open it.
+		  if (process.argv.length > 2 && process.argv[2].localeCompare(global.URLToOpen))
+		  {
+			global.URLToOpen =  (process.argv.length > 2 ? process.argv[2] : 'https://www.ordissinaute.com/search')
+			sendIPCToWindow(mainWindow, 'addTab', {
+			  url: global.URLToOpen
+			})
+		  }
+		  mainWindow.setMenu(null);
+		  // mainWindow.openDevTools()
+		})
+	  })
+
+	  // createAppMenu()
+	  // createDockMenu()
+	  registerProtocols()
+	})
+
+	app.on('open-url', function (e, url) {
+	  if (appIsReady) {
+		sendIPCToWindow(mainWindow, 'addTab', {
+		  url: url
+		})
+	  } else {
+		global.URLToOpen = url // this will be handled later in the createWindow callback
+	  }
+	})
+
+	app.on('second-instance', function (e, argv, workingDir) {
+	  if (mainWindow) {
+		if (mainWindow.isMinimized()) {
+		  mainWindow.restore()
+		}
+		mainWindow.focus()
+		// add a tab with the new URL
+		handleCommandLineArguments(argv)
+	  }
+	})
+
+	/**
+	 * Emitted when the application is activated, which usually happens when clicks on the applications's dock icon
+	 * https://github.com/electron/electron/blob/master/docs/api/app.md#event-activate-os-x
+	 *
+	 * Opens a new tab when all tabs are closed, and min is still open by clicking on the application dock icon
+	 */
+	app.on('activate', function (/* e, hasVisibleWindows */) {
+	  if (!mainWindow && appIsReady) { // sometimes, the event will be triggered before the app is ready, and creating new windows will fail
+		createWindow()
+	  }
+	})
 }
-
-// Quit when all windows are closed.
-app.on('window-all-closed', function () {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-app.on('ready', function () {
-  appIsReady = true
-
-  createWindow(function () {
-    mainWindow.webContents.on('did-finish-load', function () {
-      // if a URL was passed as a command line argument (probably because Min is set as the default browser on Linux), open it.
-      if (process.argv.length > 2 && process.argv[2].localeCompare(global.URLToOpen))
-      {
-        global.URLToOpen =  (process.argv.length > 2 ? process.argv[2] : 'https://www.ordissinaute.com/search')
-        sendIPCToWindow(mainWindow, 'addTab', {
-          url: global.URLToOpen
-        })
-      }
-      mainWindow.setMenu(null);
-      // mainWindow.openDevTools()
-    })
-  })
-
-  // createAppMenu()
-  // createDockMenu()
-  registerProtocols()
-})
-
-app.on('open-url', function (e, url) {
-  if (appIsReady) {
-    sendIPCToWindow(mainWindow, 'addTab', {
-      url: url
-    })
-  } else {
-    global.URLToOpen = url // this will be handled later in the createWindow callback
-  }
-})
-
-app.on('second-instance', function (e, argv, workingDir) {
-  if (mainWindow) {
-    if (mainWindow.isMinimized()) {
-      mainWindow.restore()
-    }
-    mainWindow.focus()
-    // add a tab with the new URL
-    handleCommandLineArguments(argv)
-  }
-})
-
-/**
- * Emitted when the application is activated, which usually happens when clicks on the applications's dock icon
- * https://github.com/electron/electron/blob/master/docs/api/app.md#event-activate-os-x
- *
- * Opens a new tab when all tabs are closed, and min is still open by clicking on the application dock icon
- */
-app.on('activate', function (/* e, hasVisibleWindows */) {
-  if (!mainWindow && appIsReady) { // sometimes, the event will be triggered before the app is ready, and creating new windows will fail
-    createWindow()
-  }
-})
 
 ipc.on('focusMainWebContents', function () {
   mainWindow.webContents.focus()
